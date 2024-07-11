@@ -1,22 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Debtor } from './entities/debtor.entity';
-import { CreateDebtorDto } from './dto/debtor.dto';
+import { CreateDebtorDto, UpdateDebtorDto } from './dto/debtor.dto';
 
 @Injectable()
 export class DebtorsService {
   constructor(
     @InjectRepository(Debtor)
-    private DebtorRepository: Repository<Debtor>,
+    private debtorRepository: Repository<Debtor>,
   ) {}
 
   async findDebtors(): Promise<Debtor[]> {
-    return await this.DebtorRepository.find();
+    return await this.debtorRepository.find();
   }
 
-  async createDebtor(body: CreateDebtorDto): Promise<Debtor> {
-    const newDebtor: Debtor = this.DebtorRepository.create(body);
-    return await this.DebtorRepository.save(newDebtor);
+  async findOneDebtor(debtorId: string): Promise<Debtor> {
+    const debtor = await this.debtorRepository.findOne({ where: { debtorId } });
+    
+    if (!debtor) {
+      throw new NotFoundException(`El deudor con ID '${debtorId}' no existe.`);
+    }
+    
+    return debtor;
+  }
+
+  async findOneDebtorByRut(rut: string): Promise<Debtor> {
+    const debtor = await this.debtorRepository.findOne({ where: { rut } });
+    
+    if (!debtor) {
+      throw new NotFoundException(`El deudor con RUT '${rut}' no existe.`);
+    }
+    
+    return debtor;
+  }
+
+  async createDebtor(createDebtorDto: CreateDebtorDto): Promise<Debtor> {
+    try {
+      const newDebtor = this.debtorRepository.create(createDebtorDto);
+      return await this.debtorRepository.save(newDebtor);
+    } catch (error) {
+      if (error.code === '23505') {
+        throw new ConflictException(`El deudor con RUT '${createDebtorDto.rut}' ya existe.`);
+      }
+      throw error;
+    }
+  }
+
+  async updateDebtor(debtorId: string, updateDebtorDto: UpdateDebtorDto): Promise<Debtor> {
+    const debtor = await this.findOneDebtor(debtorId);
+    
+    return await this.debtorRepository.save({
+      ...debtor,
+      ...updateDebtorDto,
+    });
   }
 }

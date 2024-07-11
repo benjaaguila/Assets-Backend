@@ -20,4 +20,8 @@ export class PaymentsService {
     return await this.paymentRepository.save(newPayment);
   }
 
+  async getPaymentsCount(): Promise<number> {
+    return await this.paymentRepository.count();
+  }
+
 }

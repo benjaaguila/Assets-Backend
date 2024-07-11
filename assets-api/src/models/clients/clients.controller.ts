@@ -1,15 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ConflictException } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/client.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('clients')
 @Controller('clients')
@@ -17,12 +9,19 @@ export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Post()
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientsService.createClient(createClientDto);
+  async create(@Body() createClientDto: CreateClientDto) {
+    try {
+      return await this.clientsService.createClient(createClientDto);
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.clientsService.findClients();
+  async findAll() {
+    return await this.clientsService.findClients();
   }
 }

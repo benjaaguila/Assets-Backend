@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from 'typeorm';
 import { Payment } from '../../payments/entities/payment.entity';
 
 @Entity({ name: 'debtors' })
+@Unique(['rut'])
 export class Debtor {
   @PrimaryGeneratedColumn('uuid')
   debtorId: string;
