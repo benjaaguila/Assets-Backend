@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, ConflictException } from '@nestjs/common';
+import { Controller, Get, Post, Body, ConflictException, Param } from '@nestjs/common';
 import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/manager.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -23,5 +23,10 @@ export class ManagersController {
   @Get()
   async findAll() {
     return await this.managersService.findManagers();
+  }
+
+  @Get(':name')
+  async findOneByName(@Param('name') name: string) {
+    return await this.managersService.findOneManagerByName(name);
   }
 }

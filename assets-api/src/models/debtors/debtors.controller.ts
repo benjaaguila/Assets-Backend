@@ -29,4 +29,9 @@ export class DebtorsController {
   async update(@Param('id') id: string, @Body() updateDebtorDto: UpdateDebtorDto) {
     return await this.debtorsService.updateDebtor(id, updateDebtorDto);
   }
+
+  @Get(':rut')
+  async findOneByRut(@Param('rut') rut: string) {
+    return await this.debtorsService.findOneDebtorByRut(rut);
+  }
 }

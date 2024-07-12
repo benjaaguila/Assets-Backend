@@ -24,4 +24,9 @@ export class ClientsController {
   async findAll() {
     return await this.clientsService.findClients();
   }
+
+  @Get(':name')
+  async findOneByName(@Param('name') name: string) {
+    return await this.clientsService.findOneClientByName(name);
+  }
 }
