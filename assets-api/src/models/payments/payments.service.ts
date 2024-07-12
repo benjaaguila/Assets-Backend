@@ -32,14 +32,25 @@ export class PaymentsService {
     return await this.paymentRepository.count();
   }
 
-  async findPaymentsInfoByClientName(clientName: string): Promise<{ managerName: string, totalAmountManaged: number }[]> {
+  async findPaymentsInfoByClientName(
+    clientName: string,
+  ): Promise<{ managerName: string; totalAmountManaged: number }[]> {
     const client = await this.clientsService.findOneClientByName(clientName);
-    const managerIds = [...new Set((await this.findPaymentsByClientId(client.clientId)).map((payment) => payment.managerId))];
-    const managerInfo = await Promise.all(managerIds.map((managerId) => this.getManagerInfo(managerId, client.clientId)));
+    const managerIds = [
+      ...new Set(
+        (await this.findPaymentsByClientId(client.clientId)).map(
+          (payment) => payment.managerId,
+        ),
+      ),
+    ];
+    const managerInfo = await Promise.all(
+      managerIds.map((managerId) =>
+        this.getManagerInfo(managerId, client.clientId),
+      ),
+    );
 
     return managerInfo;
-}
-
+  }
 
   async findPaymentsByClientId(clientId: string): Promise<Payment[]> {
     return await this.paymentRepository.find({
@@ -49,25 +60,42 @@ export class PaymentsService {
     });
   }
 
-  async getManagerInfo(managerId: string, clientId: string): Promise<{ managerName: string, totalAmountManaged: number }> {
+  async getManagerInfo(
+    managerId: string,
+    clientId: string,
+  ): Promise<{ managerName: string; totalAmountManaged: number }> {
     const manager = await this.managersService.findOneManager(managerId);
-    const totalAmountManaged = await this.calculateTotalAmountByManagerId(clientId, managerId);
+    const totalAmountManaged = await this.calculateTotalAmountByManagerId(
+      clientId,
+      managerId,
+    );
     return {
-        managerName: manager.name,
-        totalAmountManaged,
+      managerName: manager.name,
+      totalAmountManaged,
     };
-}
+  }
 
-private async calculateTotalAmountByManagerId(clientId: string, managerId: string): Promise<number> {
-  const payments = await this.findPaymentsByClientIdAndManagerId(clientId, managerId);
+  private async calculateTotalAmountByManagerId(
+    clientId: string,
+    managerId: string,
+  ): Promise<number> {
+    const payments = await this.findPaymentsByClientIdAndManagerId(
+      clientId,
+      managerId,
+    );
 
-  const totalAmount: number = payments.reduce((total, payment) => total + Number(payment.amount), 0);
+    const totalAmount: number = payments.reduce(
+      (total, payment) => total + Number(payment.amount),
+      0,
+    );
 
-  return totalAmount;
-}
+    return totalAmount;
+  }
 
-
-  async findPaymentsByClientIdAndManagerId(clientId: string, managerId: string): Promise<Payment[]> {
+  async findPaymentsByClientIdAndManagerId(
+    clientId: string,
+    managerId: string,
+  ): Promise<Payment[]> {
     return await this.paymentRepository.find({
       where: {
         clientId,
@@ -75,5 +103,4 @@ private async calculateTotalAmountByManagerId(clientId: string, managerId: strin
       },
     });
   }
-
 }

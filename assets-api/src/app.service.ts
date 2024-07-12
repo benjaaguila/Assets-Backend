@@ -3,10 +3,7 @@ import { PaymentsService } from './models/payments/payments.service';
 
 @Injectable()
 export class AppService {
-
-  constructor(
-    private PaymentsService: PaymentsService,
-  ) {}
+  constructor(private PaymentsService: PaymentsService) {}
 
   getHello(): string {
     return 'Hello World!';

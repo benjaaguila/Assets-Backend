@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  Unique,
+} from 'typeorm';
 import { Payment } from '../../payments/entities/payment.entity';
 
 @Entity({ name: 'managers' })

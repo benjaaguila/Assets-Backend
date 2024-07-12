@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Body, ConflictException, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  ConflictException,
+  Param,
+} from '@nestjs/common';
 import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/manager.dto';
 import { ApiTags } from '@nestjs/swagger';

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  Unique,
+} from 'typeorm';
 import { Payment } from '../../payments/entities/payment.entity';
 
 @Entity({ name: 'clients' })
@@ -6,7 +12,7 @@ import { Payment } from '../../payments/entities/payment.entity';
 export class Client {
   @PrimaryGeneratedColumn('uuid')
   clientId: string;
-  
+
   @Column()
   name: string;
 

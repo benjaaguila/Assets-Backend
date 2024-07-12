@@ -37,7 +37,9 @@ export class ClientsService {
       return await this.clientRepository.save(newClient);
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException(`El cliente con nombre '${createClientDto.name}' ya existe.`);
+        throw new ConflictException(
+          `El cliente con nombre '${createClientDto.name}' ya existe.`,
+        );
       }
       throw error;
     }
