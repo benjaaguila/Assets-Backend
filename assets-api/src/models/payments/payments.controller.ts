@@ -25,4 +25,8 @@ export class PaymentsController {
     return this.paymentsService.findAllPayments();
   }
 
+  @Get(':clientName')
+  findPaymentsInfoByClientName(@Param('clientName') clientName: string) {
+    return this.paymentsService.findPaymentsInfoByClientName(clientName);
+  }
 }
