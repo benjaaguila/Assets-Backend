@@ -13,7 +13,8 @@ def load_environment_variables():
         'database': os.getenv('DB_NAME'),
         'username': os.getenv('DB_USER'),
         'password': os.getenv('DB_PASS'),
-        'api_url': os.getenv('API_URL')
+        'api_url': os.getenv('API_URL'),
+        'time_to_wait_for_api': os.getenv('TIME_TO_WAIT_FOR_API')
     }
 
 def connect_to_postgresql(host, database, username, password, query):
@@ -89,14 +90,22 @@ def process_row(url, row):
     payment_response = requests.post(f"{url}/payments", json=payment_data)
     print(f"Payment created: {payment_response.json()}")
 
+def check_data_existence(url):
+    response = requests.get(f"{url}/hasData")
+    return response.json()
+
 def main():
-    env_vars = load_environment_variables()
     query = "SELECT * FROM tabla_cubo"
 
     df = connect_to_postgresql(env_vars['host'], env_vars['database'], env_vars['username'], env_vars['password'], query)
 
     if df is not None:
         url = env_vars['api_url']
+        
+        if check_data_existence(url):
+            print("Los datos ya están poblados.")
+            return
+        
         for index, row in df.iterrows():
             try:
                 process_row(url, row)
@@ -104,5 +113,6 @@ def main():
                 print(f"Error processing row {index}: {e}")
 
 if __name__ == "__main__":
-    time.sleep(10)
+    env_vars = load_environment_variables()
+    time.sleep(int(env_vars['time_to_wait_for_api']))
     main()
