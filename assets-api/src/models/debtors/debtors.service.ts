@@ -47,8 +47,8 @@ export class DebtorsService {
     }
   }
 
-  async updateDebtor(debtorId: string, updateDebtorDto: UpdateDebtorDto): Promise<Debtor> {
-    const debtor = await this.findOneDebtor(debtorId);
+  async updateDebtorByRut(rut: string, updateDebtorDto: UpdateDebtorDto): Promise<Debtor> {
+    const debtor = await this.findOneDebtorByRut(rut);
     
     return await this.debtorRepository.save({
       ...debtor,
