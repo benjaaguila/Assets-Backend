@@ -25,9 +25,9 @@ export class DebtorsController {
     return await this.debtorsService.findDebtors();
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateDebtorDto: UpdateDebtorDto) {
-    return await this.debtorsService.updateDebtor(id, updateDebtorDto);
+  @Patch(':rut')
+  async update(@Param('rut') rut: string, @Body() updateDebtorDto: UpdateDebtorDto) {
+    return await this.debtorsService.updateDebtorByRut(rut, updateDebtorDto);
   }
 
   @Get(':rut')
