@@ -46,6 +46,22 @@ def create_or_get_resource(url, endpoint, data, key):
             raise Exception(f"Error retrieving existing {endpoint}: {resource_response.text}")
     return response.json()
 
+def create_or_update_debtor(url, data, key):
+    response = requests.post(f"{url}/debtors", json=data)
+    if response.status_code == 409:
+        patch_data = {
+            'totalPayments': str(data['totalPayments'])
+        }
+        patch_response = requests.patch(f"{url}/debtors/{data[key]}", json=patch_data)
+        if patch_response.status_code == 200:
+            return patch_response.json()
+        else:
+            raise Exception(f"Error updating existing debtor: {patch_response.text}")
+    elif response.status_code == 201:
+        return response.json()
+    else:
+        raise Exception(f"Error creating debtor: {response.text}")
+
 def process_row(url, row):
     client_data = {
         'name': row['cliente']
@@ -59,7 +75,7 @@ def process_row(url, row):
     }
 
     clients_response = create_or_get_resource(url, 'clients', client_data, 'name')
-    debtor_response = create_or_get_resource(url, 'debtors', debtor_data, 'rut')
+    debtor_response = create_or_update_debtor(url, debtor_data, 'rut')
     manager_response = create_or_get_resource(url, 'managers', manager_data, 'name')
 
     payment_data = {
@@ -71,7 +87,7 @@ def process_row(url, row):
     }
 
     payment_response = requests.post(f"{url}/payments", json=payment_data)
-    print(payment_response.json())
+    print(f"Payment created: {payment_response.json()}")
 
 def main():
     env_vars = load_environment_variables()
