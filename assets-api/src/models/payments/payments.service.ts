@@ -20,7 +20,11 @@ export class PaymentsService {
     return await this.paymentRepository.save(newPayment);
   }
 
-  async getPaymentsCount(): Promise<number> {
+  async hasPayments(): Promise<boolean> {
+    return (await this.getPaymentsCount()) > 0;
+  }
+
+  private async getPaymentsCount(): Promise<number> {
     return await this.paymentRepository.count();
   }
 
