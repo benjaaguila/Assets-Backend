@@ -31,6 +31,14 @@ export class ManagersService {
     return manager;
   }
 
+  async findOneManagerById(managerId: string): Promise<Manager> {
+    const manager = await this.managerRepository.findOne({ where: { managerId } });
+    if (!manager) {
+      throw new ConflictException(`El manager con ID '${managerId}' no existe.`);
+    }
+    return manager;
+  }
+
   async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
     try {
       const newManager = this.managerRepository.create(createManagerDto);
