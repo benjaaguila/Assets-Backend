@@ -1,15 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, ConflictException, Patch, Param } from '@nestjs/common';
 import { DebtorsService } from './debtors.service';
-import { CreateDebtorDto } from './dto/debtor.dto';
-import { UpdateDebtorDto } from './dto/debtor.dto';
+import { CreateDebtorDto, UpdateDebtorDto } from './dto/debtor.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('debtors')
@@ -18,27 +9,29 @@ export class DebtorsController {
   constructor(private readonly debtorsService: DebtorsService) {}
 
   @Post()
-  create(@Body() createDebtorDto: CreateDebtorDto) {
-    return this.debtorsService.createDebtor(createDebtorDto);
+  async create(@Body() createDebtorDto: CreateDebtorDto) {
+    try {
+      return await this.debtorsService.createDebtor(createDebtorDto);
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.debtorsService.findDebtors();
+  async findAll() {
+    return await this.debtorsService.findDebtors();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.debtorsService.findOne(+id);
-  // }
+  @Patch(':rut')
+  async update(@Param('rut') rut: string, @Body() updateDebtorDto: UpdateDebtorDto) {
+    return await this.debtorsService.updateDebtorByRut(rut, updateDebtorDto);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateDebtorDto: UpdateDebtorDto) {
-  //   return this.debtorsService.update(+id, updateDebtorDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.debtorsService.remove(+id);
-  // }
+  @Get(':rut')
+  async findOneByRut(@Param('rut') rut: string) {
+    return await this.debtorsService.findOneDebtorByRut(rut);
+  }
 }

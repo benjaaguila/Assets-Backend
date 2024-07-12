@@ -32,6 +32,23 @@ services:
     networks:
       - assets-network
 
+  data-extractor:
+    container_name: data-extractor
+    build:
+      context: ./data-extractor
+      dockerfile: docker/Dockerfile.dev
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./data-extractor:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file:
+      - ./env/data-extractor.env
+    depends_on:
+      - assets-api
+    networks:
+      - assets-network
+
 networks:
   assets-network:
     driver: bridge

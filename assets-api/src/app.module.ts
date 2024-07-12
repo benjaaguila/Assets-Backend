@@ -9,6 +9,8 @@ import { Manager } from './models/managers/entities/manager.entity';
 import { ManagersModule } from './models/managers/managers.module';
 import { PaymentsModule } from './models/payments/payments.module';
 import { Payment } from './models/payments/entities/payment.entity';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 const DB_PORT = process.env.DB_PORT || '5432';
 @Module({
@@ -23,16 +25,15 @@ const DB_PORT = process.env.DB_PORT || '5432';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [Client, Debtor, Manager, Payment], // add entities here
+      entities: [Client, Debtor, Manager, Payment],
       synchronize: true,
     }),
     ClientsModule,
     DebtorsModule,
     ManagersModule,
     PaymentsModule,
-    // add other modules here
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

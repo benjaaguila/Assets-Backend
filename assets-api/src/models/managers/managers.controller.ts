@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, ConflictException, Param } from '@nestjs/common';
 import { ManagersService } from './managers.service';
 import { CreateManagerDto } from './dto/manager.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,12 +9,24 @@ export class ManagersController {
   constructor(private readonly managersService: ManagersService) {}
 
   @Post()
-  create(@Body() createManagerDto: CreateManagerDto) {
-    return this.managersService.createManager(createManagerDto);
+  async create(@Body() createManagerDto: CreateManagerDto) {
+    try {
+      return await this.managersService.createManager(createManagerDto);
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 
   @Get()
-  findAll() {
-    return this.managersService.findManagers();
+  async findAll() {
+    return await this.managersService.findManagers();
+  }
+
+  @Get(':name')
+  async findOneByName(@Param('name') name: string) {
+    return await this.managersService.findOneManagerByName(name);
   }
 }
