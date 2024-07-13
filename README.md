@@ -150,7 +150,9 @@ Este comando iniciará todos los servicios necesarios para el backend, incluyend
 
 - Para acceder a los logs de un servicio específico, puedes usar `docker-compose logs --file=docker-compose.dev.yml [nombre-del-servicio]`.
 
+# Diagrama ER
   
+<img width="846" alt="Screenshot 2024-07-13 at 19 20 12" src="https://github.com/user-attachments/assets/93a07fb5-64a2-4737-a24c-8498455172c2">
 
   
 
