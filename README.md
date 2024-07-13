@@ -1,4 +1,5 @@
 
+
   
 
 # Assets Backend (NESTJS)
@@ -125,9 +126,9 @@ Este comando iniciará todos los servicios necesarios para el backend, incluyend
 
   
 
-4. Una vez que todos los servicios estén en funcionamiento, el backend estará disponible en `http://localhost:3000`.
+4. Una vez que todos los servicios estén en funcionamiento, el backend estará disponible en http://localhost:3000.
 
-5. Se puede acceder a la documentación de los endpoints en `http://localhost:3000/api-docs`
+5. Se puede acceder a la documentación de los endpoints en http://localhost:3000/api-docs
 
   
 
