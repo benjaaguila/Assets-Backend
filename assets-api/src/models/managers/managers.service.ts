@@ -16,9 +16,13 @@ export class ManagersService {
   }
 
   async findOneManager(managerId: string): Promise<Manager> {
-    const manager = await this.managerRepository.findOne({ where: { managerId } });
+    const manager = await this.managerRepository.findOne({
+      where: { managerId },
+    });
     if (!manager) {
-      throw new ConflictException(`El manager con ID '${managerId}' no existe.`);
+      throw new ConflictException(
+        `El manager con ID '${managerId}' no existe.`,
+      );
     }
     return manager;
   }
@@ -31,13 +35,27 @@ export class ManagersService {
     return manager;
   }
 
+  async findOneManagerById(managerId: string): Promise<Manager> {
+    const manager = await this.managerRepository.findOne({
+      where: { managerId },
+    });
+    if (!manager) {
+      throw new ConflictException(
+        `El manager con ID '${managerId}' no existe.`,
+      );
+    }
+    return manager;
+  }
+
   async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
     try {
       const newManager = this.managerRepository.create(createManagerDto);
       return await this.managerRepository.save(newManager);
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException(`El manager con nombre '${createManagerDto.name}' ya existe.`);
+        throw new ConflictException(
+          `El manager con nombre '${createManagerDto.name}' ya existe.`,
+        );
       }
       throw error;
     }

@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Debtor } from './entities/debtor.entity';
@@ -17,21 +21,21 @@ export class DebtorsService {
 
   async findOneDebtor(debtorId: string): Promise<Debtor> {
     const debtor = await this.debtorRepository.findOne({ where: { debtorId } });
-    
+
     if (!debtor) {
       throw new NotFoundException(`El deudor con ID '${debtorId}' no existe.`);
     }
-    
+
     return debtor;
   }
 
   async findOneDebtorByRut(rut: string): Promise<Debtor> {
     const debtor = await this.debtorRepository.findOne({ where: { rut } });
-    
+
     if (!debtor) {
       throw new NotFoundException(`El deudor con RUT '${rut}' no existe.`);
     }
-    
+
     return debtor;
   }
 
@@ -41,18 +45,33 @@ export class DebtorsService {
       return await this.debtorRepository.save(newDebtor);
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException(`El deudor con RUT '${createDebtorDto.rut}' ya existe.`);
+        throw new ConflictException(
+          `El deudor con RUT '${createDebtorDto.rut}' ya existe.`,
+        );
       }
       throw error;
     }
   }
 
-  async updateDebtorByRut(rut: string, updateDebtorDto: UpdateDebtorDto): Promise<Debtor> {
+  async updateDebtorByRut(
+    rut: string,
+    updateDebtorDto: UpdateDebtorDto,
+  ): Promise<Debtor> {
     const debtor = await this.findOneDebtorByRut(rut);
-    
+
     return await this.debtorRepository.save({
       ...debtor,
       ...updateDebtorDto,
     });
+  }
+
+  async getTotalPaymentsRecibedFromDebtors(debtorIds: string[]): Promise<number> {
+
+    return (await Promise.all(
+      debtorIds.map(async (debtorId) => {
+        const debtor = await this.findOneDebtor(debtorId);
+        return debtor.totalPayments;
+      }),
+    )).reduce((total, payments) => total + payments, 0);
   }
 }

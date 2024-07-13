@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, ConflictException, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  ConflictException,
+  Patch,
+  Param,
+} from '@nestjs/common';
 import { DebtorsService } from './debtors.service';
 import { CreateDebtorDto, UpdateDebtorDto } from './dto/debtor.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -26,7 +34,10 @@ export class DebtorsController {
   }
 
   @Patch(':rut')
-  async update(@Param('rut') rut: string, @Body() updateDebtorDto: UpdateDebtorDto) {
+  async update(
+    @Param('rut') rut: string,
+    @Body() updateDebtorDto: UpdateDebtorDto,
+  ) {
     return await this.debtorsService.updateDebtorByRut(rut, updateDebtorDto);
   }
 
