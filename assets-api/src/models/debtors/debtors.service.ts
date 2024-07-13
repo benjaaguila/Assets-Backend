@@ -64,4 +64,14 @@ export class DebtorsService {
       ...updateDebtorDto,
     });
   }
+
+  async getTotalPaymentsRecibedFromDebtors(debtorIds: string[]): Promise<number> {
+
+    return (await Promise.all(
+      debtorIds.map(async (debtorId) => {
+        const debtor = await this.findOneDebtor(debtorId);
+        return debtor.totalPayments;
+      }),
+    )).reduce((total, payments) => total + payments, 0);
+  }
 }

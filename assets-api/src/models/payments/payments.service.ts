@@ -5,13 +5,16 @@ import { Payment } from './entities/payment.entity';
 import { CreatePaymentDto } from './dto/payment.dto';
 import { ClientsService } from '../clients/clients.service';
 import { ManagersService } from '../managers/managers.service';
+import { Inject, forwardRef } from '@nestjs/common';
 
 @Injectable()
 export class PaymentsService {
   constructor(
     @InjectRepository(Payment)
     private paymentRepository: Repository<Payment>,
+    @Inject(forwardRef(() => ClientsService))
     private clientsService: ClientsService,
+    @Inject(forwardRef(() => ManagersService))
     private managersService: ManagersService,
   ) {}
 
